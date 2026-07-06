@@ -29,6 +29,16 @@ opencode is a Go binary compiled against Linux glibc, which cannot run directly 
 bash opencode-termux.sh install
 ```
 
+### Upgrade
+
+```bash
+bash opencode-termux.sh upgrade
+```
+
+Safely upgrades `opencode.real` while preserving the wrapper script. Automatically backs up the old version and rolls back if the new version fails verification.
+
+> **NOTE:** Do NOT use opencode's built-in `opencode upgrade` — it overwrites the wrapper script and breaks the `grun` setup.
+
 ### Uninstall
 
 ```bash
