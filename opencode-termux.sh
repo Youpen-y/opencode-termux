@@ -158,6 +158,7 @@ upgrade_opencode() {
     local download_url
     download_url=$(fetch_download_url)
     new_ver=$(basename "$(dirname "$download_url")")
+    new_ver="${new_ver#v}"  # strip leading "v" from tag name
 
     if [ "$old_ver" = "$new_ver" ]; then
         ok "已是最新版本 ($old_ver)"
