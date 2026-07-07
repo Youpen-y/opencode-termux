@@ -103,8 +103,20 @@ install_opencode() {
     echo "  opencode Termux 安装方案"
     echo "=========================================="
     ensure_glibc
-    download_to "$OPENCODE_DIR"
-    create_wrapper
+
+    if [ -f "$OPENCODE_DIR/opencode.real" ]; then
+        # 已有安装 → 只替换二进制，保留 wrapper
+        local tmpdir="${TMPDIR:-$HOME/.tmp}"
+        download_to "$tmpdir"
+        mv -f "$tmpdir/opencode" "$OPENCODE_DIR/opencode.real"
+        chmod +x "$OPENCODE_DIR/opencode.real"
+        rm -rf "$tmpdir/opencode.tar.gz" "$tmpdir/opencode"
+        ok "已更新 opencode.real"
+    else
+        download_to "$OPENCODE_DIR"
+        create_wrapper
+    fi
+
     verify
 }
 
@@ -114,8 +126,10 @@ install_opencode() {
 create_wrapper() {
     [ -f "$OPENCODE_DIR/opencode" ] || die "$OPENCODE_DIR/opencode 不存在"
 
-    # 如果已存在 opencode.real，说明 wrapper 已经创建过
     if [ -f "$OPENCODE_DIR/opencode.real" ]; then
+        # 已有 wrapper 和旧二进制 → 只替换二进制
+        mv "$OPENCODE_DIR/opencode" "$OPENCODE_DIR/opencode.real"
+        ok "已更新 opencode.real"
         return
     fi
 
